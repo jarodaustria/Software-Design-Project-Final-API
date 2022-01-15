@@ -55,7 +55,7 @@ class Trainer(db.Model):
             'age': self.age
         }
     
-@app.route('/trainees', )
+@app.route('/trainees')
 def all_trainees():
     trainees = Trainee.query.all()
     return jsonify(trainees = [item.serialize for item in trainees])
@@ -69,6 +69,30 @@ def all_trainers():
 def all_courses():
     courses = Course.query.all()
     return jsonify(courses = [item.serialize for item in courses])
+
+@app.route('/trainee/signup', methods=['POST'])
+def trainee_signup():
+    request_data = request.get_json()
+
+    new_trainee = Trainee(full_name = request_data['full_name'],
+                        email = request_data['email'],
+                        password = request_data['password'],
+                        age = request_data['age'])
+    db.session.add(new_trainee)
+    db.session.commit()
+    return 'trainee added successfully'
+
+@app.route('/trainer/signup', methods=['POST'])
+def trainer_signup():
+    request_data = request.get_json()
+
+    new_trainer = Trainer(full_name = request_data['full_name'],
+                        email = request_data['email'],
+                        password = request_data['password'],
+                        age = request_data['age'])
+    db.session.add(new_trainer)
+    db.session.commit()
+    return 'trainer successfully added'
 
 @app.route('/test')
 def test():
