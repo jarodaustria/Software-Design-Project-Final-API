@@ -25,6 +25,12 @@ class Trainee(db.Model):
             'password': self.password,
             'age': self.age
         }
+    @property
+    def serialize_email_password(self):
+        return {
+            'email': self.email,
+            'password': self.password,
+        }
 class Course(db.Model):
     __tablename__ = 'course'
     id = db.Column(db.Integer, primary_key=True)
@@ -54,6 +60,12 @@ class Trainer(db.Model):
             'password': self.password,
             'age': self.age
         }
+    @property
+    def serialize_email_password(self):
+        return {
+            'email': self.email,
+            'password': self.password,
+        }
     
 @app.route('/trainees')
 def all_trainees():
@@ -81,6 +93,11 @@ def trainee_signup():
     db.session.add(new_trainee)
     db.session.commit()
     return 'trainee added successfully'
+
+@app.route('/trainee/email=<string:email>')
+def trainee_by_email(email):
+    trainee = Trainee.query.filter_by(email=email).first()
+    return jsonify(trainee.serialize_email_password)
 
 @app.route('/trainer/signup', methods=['POST'])
 def trainer_signup():
